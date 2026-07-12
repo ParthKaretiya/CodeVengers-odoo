@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  fleet_manager
+  driver
+  safety_officer
+  financial_analyst
+}
+
+enum VehicleStatus {
+  available
+  on_trip
+  in_shop
+  retired
+}
+
+enum DriverStatus {
+  available
+  on_trip
+  off_duty
+  suspended
+}
+
+enum TripStatus {
+  draft
+  dispatched
+  completed
+  cancelled
+}
+
+enum MaintenanceStatus {
+  open
+  closed
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password_hash String
+  role          UserRole
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Optional: if we want to link User to Driver
+  driver        Driver?
+}
+
+model Vehicle {
+  id               Int               @id @default(autoincrement())
+  reg_number       String            @unique
+  name             String
+  type             String
+  max_capacity     Int
+  odometer         Int
+  acquisition_cost Decimal
+  status           VehicleStatus     @default(available)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  trips            Trip[]
+  maintenanceLogs  MaintenanceLog[]
+  fuelLogs         FuelLog[]
+  expenses         Expense[]
+}
+
+model Driver {
+  id                Int           @id @default(autoincrement())
+  name              String
+  license_number    String        @unique
+  license_category  String
+  license_expiry    DateTime
+  contact           String
+  safety_score      Int
+  status            DriverStatus  @default(available)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Optional link to User
+  userId            Int?          @unique
+  user              User?         @relation(fields: [userId], references: [id])
+
+  trips             Trip[]
+}
+
+model Trip {
+  id               Int          @id @default(autoincrement())
+  source           String
+  destination      String
+  vehicle_id       Int
+  driver_id        Int
+  cargo_weight     Int
+  planned_distance Int
+  actual_distance  Int?
+  fuel_consumed    Decimal?
+  status           TripStatus   @default(draft)
+  created_at       DateTime     @default(now())
+  dispatched_at    DateTime?
+  completed_at     DateTime?
+  updatedAt        DateTime     @updatedAt
+
+  vehicle          Vehicle      @relation(fields: [vehicle_id], references: [id])
+  driver           Driver       @relation(fields: [driver_id], references: [id])
+}
+
+model MaintenanceLog {
+  id             Int               @id @default(autoincrement())
+  vehicle_id     Int
+  description    String
+  cost           Decimal
+  priority       String
+  status         MaintenanceStatus @default(open)
+  opened_at      DateTime          @default(now())
+  closed_at      DateTime?
+  closing_notes  String?
+  updatedAt      DateTime          @updatedAt
+
+  vehicle        Vehicle           @relation(fields: [vehicle_id], references: [id])
+}
+
+model FuelLog {
+  id         Int      @id @default(autoincrement())
+  vehicle_id Int
+  liters     Decimal
+  cost       Decimal
+  date       DateTime
+  createdAt  DateTime @default(now())
+
+  vehicle    Vehicle  @relation(fields: [vehicle_id], references: [id])
+}
+
+model Expense {
+  id         Int      @id @default(autoincrement())
+  vehicle_id Int
+  type       String
+  amount     Decimal
+  date       DateTime
+  createdAt  DateTime @default(now())
+
+  vehicle    Vehicle  @relation(fields: [vehicle_id], references: [id])
+}
