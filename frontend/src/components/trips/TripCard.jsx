@@ -1,104 +1,165 @@
 import { User, Car, Box, Check, X, Navigation } from 'lucide-react';
 import StatusBadge from '../common/StatusBadge';
+import { getStatusColor } from '../../utils/statusColors';
 
-export default function TripCard({ 
-  trip, 
-  canAction, 
-  onDispatch, 
-  onComplete, 
-  onCancel 
-}) {
+/**
+ * TripCard — the core Kanban tile.
+ *
+ * Color system:
+ *  - Route dots + connecting line: inherit the card's status color
+ *  - Progress bar fill: the status color
+ *  - Dispatch button: --accent-primary amber (#F5A623), dark text
+ *  - Complete button: --status-completed emerald (#10B981), white text
+ *  - Cancel button: quiet ghost (secondary action)
+ */
+export default function TripCard({ trip, canAction, onDispatch, onComplete, onCancel }) {
   const { vehicle, driver } = trip;
-  const capacityPct = vehicle?.max_capacity ? Math.min((trip.cargo_weight / vehicle.max_capacity) * 100, 100) : 0;
-  
+  const statusHex = getStatusColor(trip.status);
+  const capacityPct = vehicle?.max_capacity
+    ? Math.min((trip.cargo_weight / vehicle.max_capacity) * 100, 100)
+    : 0;
+
+  // Parse hex → rgb for inline rgba usage
+  const rr = parseInt(statusHex.slice(1, 3), 16);
+  const gg = parseInt(statusHex.slice(3, 5), 16);
+  const bb = parseInt(statusHex.slice(5, 7), 16);
+
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4 animate-in fade-in duration-300 w-full overflow-hidden">
-      
-      {/* Top Row: Status Badge & Trip ID */}
-      <div className="flex items-center justify-between">
+    <div
+      style={{ borderColor: `rgba(${rr},${gg},${bb},0.2)` }}
+      className="panel p-4 flex flex-col gap-4 animate-in fade-in duration-300 w-full overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
+    >
+      {/* Top Row: Status Badge + Trip ID */}
+      <div className="flex items-center justify-between gap-2">
         <StatusBadge status={trip.status} />
-        <span className="text-xs font-mono font-medium text-slate-400">
-          TRP-{trip.id.toString().padStart(4, '0')}
+        <span className="text-[11px] font-mono font-medium text-text-secondary shrink-0">
+          TRP-{String(trip.id).padStart(4, '0')}
         </span>
       </div>
 
-      {/* Route (Vertical Stack to handle long city names without overflow) */}
-      <div className="flex flex-col gap-0.5">
+      {/* Route — vertical with status-colored dots */}
+      <div className="flex flex-col" style={{ gap: 0 }}>
+        {/* Origin */}
         <div className="flex items-start gap-2.5">
-          <div className="w-2 h-2 rounded-full bg-slate-800 mt-1.5 shrink-0 relative z-10" />
-          <span className="text-sm font-bold text-slate-800 leading-snug break-words flex-1">
+          <div className="flex flex-col items-center" style={{ width: 8, marginTop: 5 }}>
+            <span
+              style={{ backgroundColor: statusHex, boxShadow: `0 0 6px rgba(${rr},${gg},${bb},0.6)` }}
+              className="w-2 h-2 rounded-full shrink-0"
+            />
+            <span
+              style={{ backgroundColor: `rgba(${rr},${gg},${bb},0.3)`, width: 1, height: 20 }}
+            />
+          </div>
+          <span className="text-sm font-semibold text-text-primary leading-snug break-words flex-1 pb-1">
             {trip.source}
           </span>
         </div>
-        <div className="flex items-start gap-2.5 -my-1">
-          <div className="w-0.5 h-4 bg-slate-200 ml-[3px] shrink-0" />
-        </div>
+        {/* Destination */}
         <div className="flex items-start gap-2.5">
-          <div className="w-2 h-2 rounded-full border-2 border-emerald-500 bg-white mt-1.5 shrink-0 relative z-10" />
-          <span className="text-sm font-bold text-slate-800 leading-snug break-words flex-1">
+          <div style={{ width: 8, marginTop: 5 }}>
+            <span
+              style={{
+                display: 'block',
+                width: 8, height: 8,
+                borderRadius: '50%',
+                border: `2px solid ${statusHex}`,
+                backgroundColor: '#121F38',
+              }}
+            />
+          </div>
+          <span className="text-sm font-semibold text-text-primary leading-snug break-words flex-1">
             {trip.destination}
           </span>
         </div>
       </div>
 
-      {/* Details Grid */}
-      <div className="grid grid-cols-2 gap-y-3 gap-x-4 bg-slate-50 rounded-lg p-3 border border-slate-100">
+      {/* Details grid */}
+      <div
+        className="grid grid-cols-2 gap-y-3 gap-x-4 rounded-lg p-3 border border-app-border bg-base-mid"
+      >
         {/* Vehicle */}
         <div className="flex flex-col gap-1 min-w-0">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Vehicle</span>
-          <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium overflow-hidden">
-            <Car className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span className="truncate">{vehicle?.name || 'Unknown'}</span>
+          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Vehicle</span>
+          <div className="flex items-center gap-1.5 overflow-hidden">
+            <Car className="w-3.5 h-3.5 text-text-secondary shrink-0" />
+            <span className="text-xs font-mono font-semibold text-text-primary truncate">{vehicle?.name ?? '—'}</span>
           </div>
         </div>
 
         {/* Driver */}
         <div className="flex flex-col gap-1 min-w-0">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Driver</span>
-          <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium overflow-hidden">
-            <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span className="truncate">{driver?.name || 'Unassigned'}</span>
+          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Driver</span>
+          <div className="flex items-center gap-1.5 overflow-hidden">
+            <User className="w-3.5 h-3.5 text-text-secondary shrink-0" />
+            <span className="text-xs font-semibold text-text-primary truncate">{driver?.name ?? 'Unassigned'}</span>
           </div>
         </div>
 
-        {/* Cargo Progress */}
-        <div className="col-span-2 flex flex-col gap-1.5 mt-1">
+        {/* Cargo progress bar */}
+        <div className="col-span-2 flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
-             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-               <Box className="w-3 h-3" /> Cargo
-             </span>
-             <span className="text-[10px] font-bold text-slate-600">
-               {trip.cargo_weight} / {vehicle?.max_capacity || 0} kg
-             </span>
+            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider flex items-center gap-1">
+              <Box className="w-3 h-3" /> Cargo
+            </span>
+            <span className="text-[10px] font-mono font-bold text-text-primary">
+              {trip.cargo_weight} / {vehicle?.max_capacity ?? 0} kg
+            </span>
           </div>
-          <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-             <div 
-               className={`h-full rounded-full transition-all ${capacityPct > 90 ? 'bg-orange-500' : 'bg-blue-500'}`}
-               style={{ width: `${capacityPct}%` }}
-             />
+          {/* Track */}
+          <div style={{ backgroundColor: '#1E2330' }} className="h-1.5 w-full rounded-full overflow-hidden">
+            {/* Fill — uses status color */}
+            <div
+              style={{
+                width: `${capacityPct}%`,
+                backgroundColor: statusHex,
+                height: '100%',
+                borderRadius: 9999,
+                transition: 'width 0.3s ease',
+              }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Actions (Only if canAction is true) */}
+      {/* Action buttons */}
       {canAction && (
-        <div className="pt-1 flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-2 pt-1">
           {trip.status === 'draft' && (
             <>
-              <button onClick={() => onCancel(trip)} className="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-1">
+              {/* Cancel — quiet ghost */}
+              <button
+                onClick={() => onCancel(trip)}
+                style={{ color: '#8B93A7', borderColor: '#1E2330' }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border bg-transparent hover:bg-surface-raised transition-colors focus:outline-none"
+              >
                 <X className="w-3.5 h-3.5" /> Cancel
               </button>
-              <button onClick={() => onDispatch(trip)} className="px-3 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-1">
+              {/* Dispatch — amber CTA */}
+              <button
+                onClick={() => onDispatch(trip)}
+                style={{ backgroundColor: '#F5A623', color: '#0D0F14' }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition-all active:scale-95 focus:outline-none"
+              >
                 <Navigation className="w-3.5 h-3.5" /> Dispatch
               </button>
             </>
           )}
           {trip.status === 'dispatched' && (
             <>
-              <button onClick={() => onCancel(trip)} className="px-3 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-1">
+              {/* Cancel — ghost */}
+              <button
+                onClick={() => onCancel(trip)}
+                style={{ color: '#8B93A7', borderColor: '#1E2330' }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border bg-transparent hover:bg-surface-raised transition-colors focus:outline-none"
+              >
                 <X className="w-3.5 h-3.5" /> Cancel
               </button>
-              <button onClick={() => onComplete(trip)} className="px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-1">
+              {/* Complete — emerald */}
+              <button
+                onClick={() => onComplete(trip)}
+                style={{ backgroundColor: '#10B981', color: '#fff' }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition-all active:scale-95 focus:outline-none"
+              >
                 <Check className="w-3.5 h-3.5" /> Complete
               </button>
             </>

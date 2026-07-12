@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    /* Deep navy gradient — barely perceptible, gives hue without feeling flat */
+    background: linear-gradient(160deg, #0A1628 0%, #0F1E36 60%, #13213D 100%);
+    background-attachment: fixed;
+    color: #F5F6F8;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Global card panel treatment — physical lifted feel */
+  .panel {
+    background-color: #121F38;
+    border: 1px solid #22335A;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+  }
+
+  /* Elevated surface — header bar, modals, dropdowns */
+  .panel-elevated {
+    background-color: #16274A;
+    border: 1px solid #22335A;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #22335A; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2E4470; }
+}

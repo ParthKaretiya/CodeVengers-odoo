@@ -13,13 +13,13 @@ const COLUMNS = [
 // Skeleton row for loading state
 export function VehicleTableSkeleton() {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50">
+            <tr className="border-b border-app-border bg-base-mid/50">
               {COLUMNS.map(c => (
-                <th key={c.key} className="px-5 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <th key={c.key} className="px-5 py-3.5 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider">
                   {c.label}
                 </th>
               ))}
@@ -28,14 +28,14 @@ export function VehicleTableSkeleton() {
           </thead>
           <tbody>
             {Array.from({ length: 5 }).map((_, i) => (
-              <tr key={i} className="border-b border-slate-50">
+              <tr key={i} className="border-b border-app-border/50">
                 {COLUMNS.map(c => (
                   <td key={c.key} className="px-5 py-4">
-                    <div className="h-4 bg-slate-100 rounded-lg animate-pulse" style={{ width: c.key === 'status' ? '80px' : '100%' }} />
+                    <div className="h-4 bg-surface-raised rounded-lg animate-pulse" style={{ width: c.key === 'status' ? '80px' : '100%' }} />
                   </td>
                 ))}
                 <td className="px-5 py-4">
-                  <div className="h-4 w-16 bg-slate-100 rounded-lg animate-pulse" />
+                  <div className="h-4 w-16 bg-surface-raised rounded-lg animate-pulse" />
                 </td>
               </tr>
             ))}
@@ -69,16 +69,16 @@ export default function VehicleTable({ vehicles, canEdit, onEdit }) {
   });
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+    <div className="panel overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50">
+            <tr className="border-b border-app-border bg-base-mid/50">
               {COLUMNS.map(col => (
                 <th
                   key={col.key}
                   onClick={() => handleSort(col.key)}
-                  className="px-5 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer select-none hover:text-slate-800 transition-colors"
+                  className="px-5 py-3.5 text-left text-xs font-semibold text-text-secondary uppercase tracking-wider cursor-pointer select-none hover:text-text-primary transition-colors"
                 >
                   <span className="inline-flex items-center gap-1">
                     {col.label}
@@ -89,26 +89,26 @@ export default function VehicleTable({ vehicles, canEdit, onEdit }) {
                   </span>
                 </th>
               ))}
-              {canEdit && <th className="px-5 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>}
+              {canEdit && <th className="px-5 py-3.5 text-right text-xs font-semibold text-text-secondary uppercase tracking-wider">Actions</th>}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-app-border/50">
             {sorted.map(vehicle => (
               <tr
                 key={vehicle.id}
-                className="hover:bg-slate-50/70 transition-colors group"
+                className="hover:bg-surface-raised/30 transition-colors group"
               >
                 <td className="px-5 py-4">
-                  <span className="font-mono text-sm font-semibold text-slate-800">{vehicle.reg_number}</span>
+                  <span className="font-mono text-sm font-semibold text-text-primary tracking-tight">{vehicle.reg_number}</span>
                 </td>
                 <td className="px-5 py-4">
-                  <span className="text-sm font-medium text-slate-700">{vehicle.name}</span>
+                  <span className="text-sm font-medium text-text-primary">{vehicle.name}</span>
                 </td>
                 <td className="px-5 py-4">
-                  <span className="text-sm text-slate-600">{vehicle.type}</span>
+                  <span className="text-sm text-text-secondary">{vehicle.type}</span>
                 </td>
                 <td className="px-5 py-4">
-                  <span className="text-sm text-slate-600">{vehicle.max_capacity?.toLocaleString()} kg</span>
+                  <span className="font-mono text-sm font-semibold text-text-primary">{vehicle.max_capacity?.toLocaleString()}</span> <span className="text-xs text-text-secondary">kg</span>
                 </td>
                 <td className="px-5 py-4">
                   <StatusBadge status={vehicle.status} />
@@ -117,7 +117,7 @@ export default function VehicleTable({ vehicles, canEdit, onEdit }) {
                   <td className="px-5 py-4 text-right">
                     <button
                       onClick={() => onEdit(vehicle)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-secondary bg-surface-raised hover:text-accent-signal rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-signal/50 focus-visible:opacity-100"
                     >
                       <Pencil className="w-3.5 h-3.5" /> Edit
                     </button>

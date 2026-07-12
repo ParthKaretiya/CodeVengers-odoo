@@ -78,15 +78,15 @@ export default function Trips() {
       {/* Header */}
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Trip Management</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-3xl font-display font-bold text-text-primary tracking-tight">Trip Management</h1>
+          <p className="text-sm text-text-secondary mt-1">
             {loading ? 'Loading...' : `${trips.length} active and past trips`}
           </p>
         </div>
         {canAction && (
           <button
             onClick={() => setFormOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-all hover:shadow-md active:scale-95"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-accent-signal hover:bg-blue-400 rounded-xl transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-signal/50"
           >
             <Plus className="w-4 h-4" /> Create Trip
           </button>
@@ -97,10 +97,10 @@ export default function Trips() {
       {loading ? (
         <TripKanbanSkeleton />
       ) : error ? (
-        <div className="flex-1 flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-red-100">
-           <RefreshCw className="w-8 h-8 text-red-400 mb-4" />
-           <p className="text-slate-700 font-semibold mb-2">Failed to load trips</p>
-           <button onClick={refetch} className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl">Retry</button>
+        <div className="flex-1 flex flex-col items-center justify-center py-16 bg-surface rounded-2xl border border-status-shop/20">
+           <RefreshCw className="w-8 h-8 text-status-shop mb-4" />
+           <p className="text-text-primary font-semibold mb-2">Failed to load trips</p>
+           <button onClick={refetch} className="px-4 py-2 text-sm font-semibold text-text-primary bg-surface-raised rounded-xl">Retry</button>
         </div>
       ) : (
         <div className="flex-1 min-h-0">
