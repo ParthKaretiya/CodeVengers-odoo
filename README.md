@@ -49,9 +49,6 @@ Logistics companies still run their fleets on **spreadsheets and paper logbooks*
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Project Structure](#project-structure)
-- [Demo Script](#demo-script)
-- [Odoo Alignment](#odoo-alignment)
-- [Roadmap](#roadmap)
 - [Team](#team)
 
 ---
