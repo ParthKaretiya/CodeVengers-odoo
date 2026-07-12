@@ -8,35 +8,124 @@
   }
 
   body {
-    /* Deep navy gradient — barely perceptible, gives hue without feeling flat */
-    background: linear-gradient(160deg, #0A1628 0%, #0F1E36 60%, #13213D 100%);
-    background-attachment: fixed;
-    color: #F5F6F8;
+    background-color: #FAF7F2;
+    color: #1C2333;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Global card panel treatment — physical lifted feel */
+  /* ── Global animation tokens ── */
+  :root {
+    --duration-fast:   150ms;
+    --duration-base:   200ms;
+    --duration-slow:   300ms;
+    --ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ── Respect prefers-reduced-motion — skip ALL durations instantly ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 1ms !important;
+      animation-delay: 0ms !important;
+      transition-duration: 1ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+
+  /* ── Global button micro-interactions (scale + smooth bg) ── */
+  button {
+    transition:
+      background-color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      transform var(--duration-fast) ease,
+      box-shadow var(--duration-fast) ease;
+  }
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  a {
+    transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+  }
+
+  /* ── Global card panel — soft drop-shadow ── */
   .panel {
-    background-color: #121F38;
-    border: 1px solid #22335A;
+    background-color: #FFFFFF;
+    border: 1px solid #E8E2D8;
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.03);
+      0 1px 3px rgba(28, 35, 51, 0.08),
+      0 1px 2px rgba(28, 35, 51, 0.04);
     border-radius: 16px;
   }
 
-  /* Elevated surface — header bar, modals, dropdowns */
+  /* ── Elevated surface — modals, dropdowns ── */
   .panel-elevated {
-    background-color: #16274A;
-    border: 1px solid #22335A;
+    background-color: #FFFFFF;
+    border: 1px solid #E8E2D8;
     box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.04);
+      0 4px 16px rgba(28, 35, 51, 0.12),
+      0 1px 4px rgba(28, 35, 51, 0.06);
+  }
+
+  /* ── Page fade — wraps <Outlet> content ── */
+  .page-enter {
+    animation: pageFadeIn var(--duration-base) var(--ease-out) both;
+  }
+  @keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+
+  /* ── Skeleton → content reveal ── */
+  .content-reveal {
+    animation: contentFadeIn var(--duration-base) ease-out both;
+  }
+  @keyframes contentFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── Kanban card: exit (fade-out + scale-down) ── */
+  .kanban-exit {
+    animation: kanbanExit 175ms ease-in both;
+    pointer-events: none;
+  }
+  @keyframes kanbanExit {
+    from { opacity: 1; transform: scale(1);    }
+    to   { opacity: 0; transform: scale(0.94); }
+  }
+
+  /* ── Kanban card: enter (fade-in + scale-up) ── */
+  .kanban-enter {
+    animation: kanbanEnter 200ms var(--ease-out) both;
+  }
+  @keyframes kanbanEnter {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1);    }
+  }
+
+  /* ── Status badge pulse (one flash when status changes) ── */
+  .badge-pulse {
+    animation: badgePulse 300ms ease-out both;
+  }
+  @keyframes badgePulse {
+    0%   { filter: brightness(1);   }
+    40%  { filter: brightness(1.5); }
+    100% { filter: brightness(1);   }
+  }
+
+  /* ── Toast slide-in from top-right ── */
+  @keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(16px) translateY(-8px); }
+    to   { opacity: 1; transform: translateX(0)    translateY(0);    }
+  }
+  @keyframes toastFadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; transform: translateX(12px); }
   }
 
   /* Scrollbar styling */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #22335A; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #2E4470; }
+  ::-webkit-scrollbar-track { background: #FAF7F2; }
+  ::-webkit-scrollbar-thumb { background: #D1C9BC; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #B8AEA2; }
 }

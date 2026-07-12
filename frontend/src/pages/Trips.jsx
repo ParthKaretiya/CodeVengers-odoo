@@ -78,7 +78,7 @@ export default function Trips() {
       {/* Header */}
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-3xl font-display font-bold text-text-primary tracking-tight">Trip Management</h1>
+          <h1 className="text-3xl font-fraunces font-bold text-text-primary tracking-tight">Trip <em style={{ fontStyle: 'italic', fontWeight: 600 }}>Management</em></h1>
           <p className="text-sm text-text-secondary mt-1">
             {loading ? 'Loading...' : `${trips.length} active and past trips`}
           </p>

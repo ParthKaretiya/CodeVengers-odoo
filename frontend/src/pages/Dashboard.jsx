@@ -1,135 +1,113 @@
 import { useAuth } from '../context/AuthContext';
-import { ROLES, ROLE_DETAILS } from '../constants/roles';
-import { Car, Wrench, Map, Users, TrendingUp, AlertTriangle, CheckSquare, Battery, PieChart, Activity, Bell } from 'lucide-react';
+import { useDashboard } from '../hooks/useDashboard';
+import { ROLE_DETAILS } from '../constants/roles';
+import StatsCard, { StatsCardSkeleton } from '../components/dashboard/StatsCard';
+import OverdueList from '../components/dashboard/OverdueList';
+import QuickActions from '../components/dashboard/QuickActions';
+import {
+  Car, Map, Users, Wrench, CheckCircle, Fuel, Gauge, Activity
+} from 'lucide-react';
+
+const STAT_DEFS = [
+  { key: 'totalVehicles',      label: 'Total Vehicles',     icon: Car,         accent: 'blue'    },
+  { key: 'activeTrips',        label: 'Active Trips',       icon: Map,         accent: 'amber'   },
+  { key: 'availableDrivers',   label: 'Available Drivers',  icon: Users,       accent: 'green'   },
+  { key: 'maintenanceAlerts',  label: 'Maint. Alerts',      icon: Wrench,      accent: 'red'     },
+  { key: 'completedTripsToday',label: 'Trips Today',        icon: CheckCircle, accent: 'green'   },
+  { key: 'fuelSpendThisWeek',  label: 'Fuel Spend (7d)',    icon: Fuel,        accent: 'neutral', format: 'currency' },
+  { key: 'dispatchRate',       label: 'Dispatch Rate',      icon: Gauge,       accent: 'blue',   format: 'pct'      },
+];
+
+function formatValue(raw, fmt) {
+  if (raw == null) return '—';
+  if (fmt === 'currency') return `$${Number(raw).toLocaleString()}`;
+  if (fmt === 'pct') return `${raw}%`;
+  return String(raw);
+}
 
 export default function Dashboard() {
   const { role, user } = useAuth();
-  
-  // Get role title for the banner
-  const roleTitle = ROLE_DETAILS?.[role]?.title || 'Team Member';
+  const { stats, overdue, upcoming, loading } = useDashboard();
+  const roleInfo = ROLE_DETAILS?.[role] ?? {};
 
-  // Helper to render the Hero Banner
-  const renderHero = (primaryStat, secondaryText) => (
-    <div className="bg-hero-gradient rounded-2xl p-8 border border-app-border shadow-elevated mb-8 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
-      {/* Decorative background element */}
-      <div className="absolute -right-20 -top-20 w-64 h-64 bg-accent-signal opacity-10 rounded-full blur-3xl" />
-      
-      <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-display font-bold text-text-primary tracking-tight">
-            Welcome back, {user?.name?.split(' ')[0] || 'User'}!
-          </h1>
-          <span className="bg-accent-signal/20 text-accent-signal border border-accent-signal/30 text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded">
-            {roleTitle}
-          </span>
-        </div>
-        <p className="text-text-secondary">{secondaryText}</p>
-      </div>
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-      <div className="relative z-10 bg-surface-raised border border-app-border rounded-xl p-4 min-w-[200px] flex items-center justify-between shadow-card">
-        <div>
-          <p className="text-[10px] uppercase font-bold tracking-widest text-text-secondary mb-1">Live Status</p>
-          <p className="font-mono text-xl font-bold text-text-primary">{primaryStat}</p>
-        </div>
-        <div className="w-10 h-10 rounded-full bg-accent-signal/10 flex items-center justify-center border border-accent-signal/20">
-          <Activity className="w-5 h-5 text-accent-signal" />
-        </div>
-      </div>
-    </div>
-  );
+      {/* Hero Banner — soft amber-cream wash, echoes brand amber */}
+      <div
+        className="rounded-2xl p-8 border relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6"
+        style={{
+          background: 'linear-gradient(135deg, #FFF8ED 0%, #FDEDD3 100%)',
+          border: '1px solid #F0DDB8',
+          boxShadow: '0 1px 3px rgba(28,35,51,0.06)',
+        }}
+      >
+        {/* Ambient glow */}
+        <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: 'rgba(245,166,35,0.12)' }} />
 
-  // ---------------- MANAGER DASHBOARD ----------------
-  if (role === ROLES.MANAGER) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {renderHero('20 Active Trips', 'Fleet operations are running normally today.')}
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-          <StatCard title="Active Vehicles" value="42" icon={Car} />
-          <StatCard title="Active Trips" value="20" icon={Map} />
-          <StatCard title="Maintenance Alerts" value="4" icon={Wrench} urgent={true} />
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 flex-wrap mb-2">
+            <h1 className="text-3xl font-fraunces font-bold text-text-primary tracking-tight">
+              Welcome back,{' '}
+              <em className="not-italic" style={{ fontStyle: 'italic', color: '#F5A623', fontWeight: 600 }}>
+                {user?.name?.split(' ')[0] || 'User'}!
+              </em>
+            </h1>
+            <span
+              className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-full border"
+              style={{ color: '#B87A0A', backgroundColor: 'rgba(245,166,35,0.15)', borderColor: 'rgba(245,166,35,0.35)' }}
+            >
+              {roleInfo?.title ?? role}
+            </span>
+          </div>
         </div>
-        
-        <div className="panel p-6">
-          <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
-            <Bell className="w-4 h-4 text-accent-signal" /> Recent Activity
-          </h2>
-          <div className="bg-base-mid rounded-xl p-4 border border-app-border">
-            <p className="text-text-secondary text-sm">Trip <span className="font-mono text-xs text-text-primary bg-surface-raised px-1.5 py-0.5 rounded border border-app-border">TRP-0104</span> dispatched successfully.</p>
+
+        {/* Live Status pill */}
+        <div
+          className="relative z-10 rounded-2xl p-4 min-w-[180px] flex items-center justify-between gap-4 shrink-0"
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E8E2D8',
+            boxShadow: '0 1px 3px rgba(28,35,51,0.08)',
+          }}
+        >
+          <div>
+            <p className="text-[10px] uppercase font-bold tracking-widest text-text-secondary mb-1">Active Trips</p>
+            <p className="font-mono text-2xl font-bold text-text-primary">
+              {loading ? '—' : stats?.activeTrips ?? '—'}
+            </p>
+          </div>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)' }}>
+            <Activity className="w-5 h-5" style={{ color: '#F5A623' }} />
           </div>
         </div>
       </div>
-    );
-  }
 
-  // ---------------- DRIVER DASHBOARD ----------------
-  if (role === ROLES.DRIVER) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {renderHero('TRP-0104', 'You have an active trip assigned for today.')}
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <StatCard title="Assigned Vehicle" value="V-104" icon={Car} />
-          <StatCard title="Today's Trip" value="TRP-0104" icon={Map} urgent={true} />
-          <StatCard title="Fuel Status" value="75%" icon={Battery} />
-          <StatCard title="Trip History" value="142" icon={Activity} />
+      {/* 7 KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4">
+        {loading
+          ? Array.from({ length: 7 }).map((_, i) => <StatsCardSkeleton key={i} />)
+          : STAT_DEFS.map(def => (
+              <StatsCard
+                key={def.key}
+                label={def.label}
+                value={formatValue(stats?.[def.key], def.format)}
+                icon={def.icon}
+                accent={def.accent}
+                fmt={def.format}
+              />
+            ))}
+      </div>
+
+      {/* Bottom Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <OverdueList overdue={overdue} upcoming={upcoming} />
+        </div>
+        <div>
+          <QuickActions />
         </div>
       </div>
-    );
-  }
-
-  // ---------------- SAFETY CHECKER DASHBOARD ----------------
-  if (role === ROLES.SAFETY) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {renderHero('8 Pending', 'Several vehicles require safety inspections before dispatch.')}
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <StatCard title="Pending Inspections" value="8" icon={CheckSquare} urgent={true} />
-          <StatCard title="Maintenance Queue" value="12" icon={Wrench} urgent={true} />
-          <StatCard title="Safety Violations" value="0" icon={AlertTriangle} />
-          <StatCard title="Vehicle Health" value="94%" icon={Activity} />
-        </div>
-      </div>
-    );
-  }
-
-  // ---------------- ANALYST DASHBOARD ----------------
-  if (role === ROLES.ANALYST) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {renderHero('$45.2k Rev', 'Revenue is up 12% compared to last week.')}
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <StatCard title="Total Revenue" value="$45.2k" icon={TrendingUp} />
-          <StatCard title="Fleet Cost" value="$12.4k" icon={PieChart} urgent={true} urgentColor="text-status-shop" urgentBg="bg-status-shop/10" urgentBorder="border-status-shop/30" />
-          <StatCard title="Fuel Analytics" value="$3.2k" icon={Battery} />
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-}
-
-// Reusable KPI Widget with panel styling
-function StatCard({ title, value, icon: Icon, urgent = false, urgentColor = 'text-status-shop', urgentBg = 'bg-status-shop/10', urgentBorder = 'border-status-shop/30' }) {
-  const isUrgent = urgent && (Number(value) > 0 || value !== '0');
-  
-  const iconColor = isUrgent ? urgentColor : 'text-text-secondary';
-  const iconBg = isUrgent ? urgentBg : 'bg-surface-raised';
-  // If urgent, give it a slightly colored border, else use standard panel styling
-  const panelClasses = isUrgent 
-    ? `bg-surface rounded-2xl p-6 border ${urgentBorder} shadow-card-hover`
-    : `panel p-6`;
-
-  return (
-    <div className={`${panelClasses} transition-all hover:-translate-y-0.5`}>
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${iconBg} ${iconColor} border ${isUrgent ? urgentBorder : 'border-app-border'}`}>
-        <Icon className="w-6 h-6" />
-      </div>
-      <h3 className="text-3xl font-mono font-bold text-text-primary tracking-tight mb-1">{value}</h3>
-      <p className="text-xs font-bold text-text-secondary uppercase tracking-widest">{title}</p>
     </div>
   );
 }

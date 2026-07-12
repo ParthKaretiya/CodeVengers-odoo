@@ -81,7 +81,7 @@ export default function Drivers() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Driver Management</h1>
+          <h1 className="text-3xl font-fraunces font-bold text-text-primary tracking-tight">Driver <em style={{ fontStyle: 'italic', fontWeight: 600 }}>Management</em></h1>
           <p className="text-sm text-slate-500 mt-1">
             {loading ? 'Loading…' : `${drivers.length} driver${drivers.length !== 1 ? 's' : ''} on roster`}
           </p>

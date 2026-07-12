@@ -53,7 +53,7 @@ export default function VehiclesPage() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Vehicle Registry</h1>
+          <h1 className="text-3xl font-fraunces font-bold text-text-primary tracking-tight">Vehicle <em style={{ fontStyle: 'italic', fontWeight: 600 }}>Registry</em></h1>
           <p className="text-sm text-slate-500 mt-1">
             {loading ? 'Loading…' : `${vehicles.length} vehicle${vehicles.length !== 1 ? 's' : ''} registered`}
           </p>
