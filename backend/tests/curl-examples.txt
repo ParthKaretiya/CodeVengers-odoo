@@ -85,3 +85,34 @@ curl -X PATCH http://localhost:5000/api/trips/<TRIP_ID>/cancel \
 # 12. Delete Trip (fleet_manager only, only if status=draft)
 curl -X DELETE http://localhost:5000/api/trips/<TRIP_ID> \
   -H "Authorization: Bearer <YOUR_TOKEN>"
+
+# ------------------------------
+# Maintenance API Examples (Replace <YOUR_TOKEN>, <MAINTENANCE_ID>, <VEHICLE_ID> as needed)
+# ------------------------------
+
+# 13. Create Maintenance Log (fleet_manager only)
+curl -X POST http://localhost:5000/api/maintenance \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "vehicle_id": <VEHICLE_ID>,
+    "description": "Oil change and tire rotation",
+    "cost": 150.00,
+    "priority": "medium"
+  }'
+
+# 14. Get All Maintenance Logs (fleet_manager or financial_analyst) - Optional query params: status, vehicle_id
+curl -X GET http://localhost:5000/api/maintenance \
+  -H "Authorization: Bearer <YOUR_TOKEN>"
+
+# 15. Get Maintenance Log by ID (fleet_manager only)
+curl -X GET http://localhost:5000/api/maintenance/<MAINTENANCE_ID> \
+  -H "Authorization: Bearer <YOUR_TOKEN>"
+
+# 16. Close Maintenance Log (fleet_manager only)
+curl -X PATCH http://localhost:5000/api/maintenance/<MAINTENANCE_ID>/close \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <YOUR_TOKEN>" \
+  -d '{
+    "closing_notes": "Maintenance completed successfully"
+  }'
