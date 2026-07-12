@@ -78,7 +78,6 @@ Access is enforced with real **Role-Based Access Control** — server-side, on e
 - 🔧 **Maintenance Workflow** — opening a record automatically pulls a vehicle out of the dispatch pool
 - ⛽ **Fuel & Expense Tracking** — automatic operational cost roll-up per vehicle
 - 📈 **Dashboard & Reports** — live KPIs, fleet utilization %, fuel efficiency, and vehicle ROI computed from real data
-- 🤖 **Predictive Maintenance (bonus)** — explainable, judge-safe risk heuristic — no external ML calls, never fails live
 
 ---
 
@@ -410,38 +409,7 @@ transitops/
 
 ---
 
-## Demo Script
 
-The 9-step flow this app is designed to showcase live:
-
-1. Register vehicle **Van-05** (500 kg capacity) → `Available`
-2. Register driver **Alex**, valid license
-3. Create a trip, cargo = 450 kg → validated, allowed
-4. Dispatch → vehicle & driver flip to `On Trip` **live**
-5. Attempt to double-book Van-05 → **blocked**, clear error message
-6. Complete the trip, enter odometer + fuel → both flip back to `Available`
-7. Create a maintenance record → vehicle flips to `In Shop`, disappears from dispatch pool
-8. Open Reports → fuel efficiency & ROI computed from real data
-9. Close with the predictive-maintenance widget + dashboard KPIs
-
----
-
-## Odoo Alignment
-
-TransitOps' data model mirrors **Odoo Fleet** and **Odoo Maintenance**: vehicle status states, driver assignment, and the request → in-progress → done maintenance workflow are designed to be directly portable into a real Odoo module using this exact schema.
-
----
-
-## Roadmap
-
-- [ ] GPS/telematics integration for live location tracking
-- [ ] Trained ML model swap-in for predictive maintenance
-- [ ] Multi-tenant SaaS billing
-- [ ] Email reminders for expiring licenses
-- [ ] PDF export for reports
-- [ ] Optimistic locking for concurrent vehicle edits
-
----
 
 ## Team
 
