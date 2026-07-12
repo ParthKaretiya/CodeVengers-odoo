@@ -1,8 +1,8 @@
 import { Wrench, BadgeCheck, Clock, AlertTriangle } from 'lucide-react';
 
 const TYPE_META = {
-  maintenance: { icon: Wrench,      color: '#F5A623' },
-  license:     { icon: BadgeCheck,  color: '#3B82F6' },
+  maintenance: { icon: Wrench,       color: '#F5A623' },
+  license:     { icon: BadgeCheck,   color: '#3B82F6' },
   inspection:  { icon: AlertTriangle, color: '#F43F5E' },
 };
 
@@ -17,12 +17,12 @@ function OverdueItem({ item, isOverdue }) {
 
   return (
     <div
-      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors hover:bg-[#16274A]/60"
+      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors hover:bg-base-mid"
       style={{ borderLeft: `3px solid ${isOverdue ? '#F43F5E' : meta.color}` }}
     >
       <div
         className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-        style={{ backgroundColor: `${isOverdue ? '#F43F5E' : meta.color}18` }}
+        style={{ backgroundColor: `${isOverdue ? '#F43F5E' : meta.color}15` }}
       >
         <Icon className="w-4 h-4" style={{ color: isOverdue ? '#F43F5E' : meta.color }} />
       </div>
@@ -34,7 +34,7 @@ function OverdueItem({ item, isOverdue }) {
         className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full shrink-0"
         style={{
           color: isOverdue ? '#F43F5E' : meta.color,
-          backgroundColor: isOverdue ? 'rgba(244,63,94,0.1)' : `${meta.color}18`
+          backgroundColor: isOverdue ? 'rgba(244,63,94,0.10)' : `${meta.color}18`
         }}
       >
         {daysLabel}
@@ -49,8 +49,8 @@ export default function OverdueList({ overdue = [], upcoming = [] }) {
   if (isEmpty) {
     return (
       <div className="panel p-6 flex flex-col items-center justify-center py-12 text-center">
-        <div className="w-12 h-12 rounded-full bg-status-available/10 flex items-center justify-center mb-4">
-          <BadgeCheck className="w-6 h-6 text-status-available" />
+        <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'rgba(16,185,129,0.10)' }}>
+          <BadgeCheck className="w-6 h-6" style={{ color: '#10B981' }} />
         </div>
         <p className="text-sm font-bold text-text-primary">All clear!</p>
         <p className="text-xs text-text-secondary mt-1">No overdue or upcoming items.</p>
@@ -67,7 +67,7 @@ export default function OverdueList({ overdue = [], upcoming = [] }) {
 
       {overdue.length > 0 && (
         <div className="space-y-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-status-cancelled">
+          <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#F43F5E' }}>
             ● Overdue ({overdue.length})
           </p>
           <div className="space-y-1.5">

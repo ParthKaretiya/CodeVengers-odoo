@@ -49,9 +49,10 @@ function VehicleDropdown({ vehicles, selected, onSelect }) {
         type="button"
         onClick={() => setOpen(o => !o)}
         style={{
-          backgroundColor: '#121F38',
-          border: '1px solid #22335A',
-          color: selected ? '#F5F6F8' : '#8B9BB8'
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #E8E2D8',
+          color: selected ? '#1C2333' : '#6B7280',
+          boxShadow: '0 1px 3px rgba(28,35,51,0.07)'
         }}
         className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-signal hover:border-accent-signal/50"
       >
@@ -69,9 +70,9 @@ function VehicleDropdown({ vehicles, selected, onSelect }) {
       {open && (
         <div
           style={{
-            backgroundColor: '#121F38',
-            border: '1px solid #22335A',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E8E2D8',
+            boxShadow: '0 8px 32px rgba(28,35,51,0.14)',
           }}
           className="absolute z-50 top-full mt-1.5 w-full rounded-xl overflow-hidden"
         >
@@ -79,8 +80,8 @@ function VehicleDropdown({ vehicles, selected, onSelect }) {
           <button
             type="button"
             onClick={() => { onSelect(null); setOpen(false); }}
-            style={{ color: '#8B9BB8' }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[#16274A] transition-colors text-left"
+            style={{ color: '#6B7280' }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-base-mid transition-colors text-left"
           >
             <span className="w-4 h-4 shrink-0" />
             Select a vehicle…
@@ -92,8 +93,8 @@ function VehicleDropdown({ vehicles, selected, onSelect }) {
               key={v.id}
               type="button"
               onClick={() => { onSelect(v); setOpen(false); }}
-              style={{ color: selected?.id === v.id ? '#F5A623' : '#F5F6F8' }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[#16274A] transition-colors text-left"
+              style={{ color: selected?.id === v.id ? '#F5A623' : '#1C2333' }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-base-mid transition-colors text-left"
             >
               <Check
                 className="w-4 h-4 shrink-0"

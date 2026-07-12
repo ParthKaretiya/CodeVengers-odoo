@@ -1,19 +1,20 @@
 import { useState } from 'react';
 
+const INPUT_CLS = "w-full bg-base-mid border border-app-border rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary focus:outline-none focus:border-accent-signal focus:ring-1 focus:ring-accent-signal appearance-none disabled:opacity-50";
+const DATE_CLS = "w-full bg-base-mid border border-app-border rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary focus:outline-none focus:border-accent-signal focus:ring-1 focus:ring-accent-signal disabled:opacity-50";
+
 const EXPENSE_TYPES = ['Toll', 'Parking', 'Loading Fee', 'Customs', 'Other'];
 
 export default function ExpenseForm({ onSubmit, loading, selectedVehicleId }) {
   const [formData, setFormData] = useState({
-    type: 'Toll',
-    amount: '',
-    date: new Date().toISOString().split('T')[0]
+    type: 'Toll', amount: '', date: new Date().toISOString().split('T')[0]
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedVehicleId) return;
     await onSubmit({ ...formData, vehicle_id: selectedVehicleId });
-    setFormData(prev => ({ ...prev, amount: '' })); // reset amount only
+    setFormData(prev => ({ ...prev, amount: '' }));
   };
 
   return (
@@ -26,51 +27,32 @@ export default function ExpenseForm({ onSubmit, loading, selectedVehicleId }) {
       <form onSubmit={handleSubmit} className="flex flex-col flex-1 space-y-5">
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Expense Type</label>
-          <select
-            value={formData.type}
-            onChange={e => setFormData({ ...formData, type: e.target.value })}
-            disabled={!selectedVehicleId || loading}
-            className="w-full bg-[#121F38] border border-app-border rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary focus:outline-none focus:border-accent-signal focus:ring-1 focus:ring-accent-signal appearance-none disabled:opacity-50"
-          >
-            {EXPENSE_TYPES.map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
+          <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}
+            disabled={!selectedVehicleId || loading} className={INPUT_CLS}>
+            {EXPENSE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
         </div>
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Amount ($)</label>
-          <input
-            type="number"
-            step="0.01"
-            required
-            value={formData.amount}
+          <input type="number" step="0.01" required value={formData.amount}
             onChange={e => setFormData({ ...formData, amount: e.target.value })}
             disabled={!selectedVehicleId || loading}
-            className="w-full bg-[#121F38] border border-app-border rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary focus:outline-none focus:border-accent-signal focus:ring-1 focus:ring-accent-signal font-mono disabled:opacity-50"
-            placeholder="e.g. 25.00"
-          />
+            className="w-full bg-base-mid border border-app-border rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary focus:outline-none focus:border-accent-signal focus:ring-1 focus:ring-accent-signal font-mono disabled:opacity-50"
+            placeholder="e.g. 25.00" />
         </div>
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Date</label>
-          <input
-            type="date"
-            required
-            value={formData.date}
+          <input type="date" required value={formData.date}
             onChange={e => setFormData({ ...formData, date: e.target.value })}
-            disabled={!selectedVehicleId || loading}
-            className="w-full bg-[#121F38] border border-app-border rounded-xl px-4 py-2.5 text-sm font-medium text-text-primary focus:outline-none focus:border-accent-signal focus:ring-1 focus:ring-accent-signal disabled:opacity-50"
-          />
+            disabled={!selectedVehicleId || loading} className={DATE_CLS} />
         </div>
 
         <div className="mt-auto pt-6">
-          <button
-            type="submit"
-            disabled={!selectedVehicleId || loading}
+          <button type="submit" disabled={!selectedVehicleId || loading}
             style={{ backgroundColor: '#10B981', color: '#fff' }}
-            className="w-full px-4 py-3 rounded-xl text-sm font-bold hover:brightness-110 transition-all active:scale-95 focus:outline-none disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-status-available/20"
-          >
+            className="w-full px-4 py-3 rounded-xl text-sm font-bold hover:brightness-110 transition-all active:scale-95 focus:outline-none disabled:opacity-50 disabled:pointer-events-none shadow-sm">
             {loading ? 'Submitting...' : 'Submit Expense'}
           </button>
         </div>

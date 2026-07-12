@@ -3,6 +3,10 @@ import { LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { SIDEBAR_ITEMS } from '../constants/sidebarItems';
 
+// Sidebar stays dark navy — deliberate Notion/Linear contrast pattern
+const SIDEBAR_BG = '#1C2333';
+const ACCENT = '#F5A623';
+
 export default function Sidebar() {
   const { pathname } = useLocation();
   const { logout, role } = useAuth();
@@ -10,14 +14,11 @@ export default function Sidebar() {
 
   const handleLogout = () => { logout(); navigate('/'); };
   const navItems = SIDEBAR_ITEMS[role] ?? [];
-  
-  // Amber brand accent
-  const ACCENT = '#F5A623';
 
   return (
     <aside
-      style={{ backgroundColor: '#060D1A', borderRight: '1px solid #22335A' }}
-      className="w-64 flex flex-col shrink-0 font-sans z-0"
+      style={{ backgroundColor: SIDEBAR_BG, borderRight: '1px solid rgba(255,255,255,0.08)' }}
+      className="w-64 flex flex-col shrink-0 font-sans"
     >
       {/* Nav */}
       <nav className="flex-1 px-3 py-5 overflow-y-auto space-y-0.5">
@@ -32,12 +33,12 @@ export default function Sidebar() {
               style={isActive ? {
                 borderLeft: `3px solid ${ACCENT}`,
                 color: ACCENT,
-                backgroundColor: '#16274A', // Surface elevated, matches header
+                backgroundColor: 'rgba(245,166,35,0.12)',
               } : {
                 borderLeft: '3px solid transparent',
-                color: '#8B9BB8', // text-secondary
+                color: 'rgba(255,255,255,0.55)',
               }}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-r-lg text-sm font-medium transition-all focus:outline-none hover:bg-[#121F38] hover:text-text-primary"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-r-lg text-sm font-medium transition-all focus:outline-none hover:text-white hover:bg-white/10"
             >
               {Icon && <Icon className="w-4 h-4 shrink-0" />}
               {item.name}
@@ -47,11 +48,11 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <div style={{ borderTop: '1px solid #22335A' }} className="p-3">
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }} className="p-3">
         <button
           onClick={handleLogout}
-          style={{ color: '#8B9BB8' }}
-          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm font-medium hover:bg-[#121F38] hover:text-red-400 transition-colors focus:outline-none"
+          style={{ color: 'rgba(255,255,255,0.45)' }}
+          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm font-medium hover:bg-white/10 hover:text-red-400 transition-colors focus:outline-none"
         >
           <LogOut className="w-4 h-4" />
           Sign Out

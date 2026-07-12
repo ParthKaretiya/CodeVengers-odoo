@@ -8,15 +8,14 @@ import {
   Car, Map, Users, Wrench, CheckCircle, Fuel, Gauge, Activity
 } from 'lucide-react';
 
-// 7 stat definitions — each maps to one mock field
 const STAT_DEFS = [
-  { key: 'totalVehicles',      label: 'Total Vehicles',        icon: Car,         accent: 'blue'    },
-  { key: 'activeTrips',        label: 'Active Trips',          icon: Map,         accent: 'amber'   },
-  { key: 'availableDrivers',   label: 'Available Drivers',     icon: Users,       accent: 'green'   },
-  { key: 'maintenanceAlerts',  label: 'Maintenance Alerts',    icon: Wrench,      accent: 'red'     },
-  { key: 'completedTripsToday',label: 'Trips Today',           icon: CheckCircle, accent: 'green'   },
-  { key: 'fuelSpendThisWeek',  label: 'Fuel Spend (7d)',       icon: Fuel,        accent: 'neutral', format: 'currency' },
-  { key: 'dispatchRate',       label: 'Dispatch Rate',         icon: Gauge,       accent: 'blue',   format: 'pct'      },
+  { key: 'totalVehicles',      label: 'Total Vehicles',     icon: Car,         accent: 'blue'    },
+  { key: 'activeTrips',        label: 'Active Trips',       icon: Map,         accent: 'amber'   },
+  { key: 'availableDrivers',   label: 'Available Drivers',  icon: Users,       accent: 'green'   },
+  { key: 'maintenanceAlerts',  label: 'Maint. Alerts',      icon: Wrench,      accent: 'red'     },
+  { key: 'completedTripsToday',label: 'Trips Today',        icon: CheckCircle, accent: 'green'   },
+  { key: 'fuelSpendThisWeek',  label: 'Fuel Spend (7d)',    icon: Fuel,        accent: 'neutral', format: 'currency' },
+  { key: 'dispatchRate',       label: 'Dispatch Rate',      icon: Gauge,       accent: 'blue',   format: 'pct'      },
 ];
 
 function formatValue(raw, fmt) {
@@ -34,18 +33,17 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-      {/* ── Hero Banner ── */}
+      {/* Hero Banner — soft amber-cream wash, echoes brand amber */}
       <div
         className="rounded-2xl p-8 border relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6"
         style={{
-          background: 'linear-gradient(120deg, #121F38 0%, #16274A 60%, #1a2f55 100%)',
-          border: '1px solid #22335A',
-          boxShadow: '0 4px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)'
+          background: 'linear-gradient(135deg, #FFF8ED 0%, #FDEDD3 100%)',
+          border: '1px solid #F0DDB8',
+          boxShadow: '0 1px 3px rgba(28,35,51,0.06)',
         }}
       >
         {/* Ambient glow */}
-        <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: 'rgba(245,166,35,0.07)' }} />
-        <div className="absolute -left-8 bottom-0 w-40 h-40 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: 'rgba(59,130,246,0.06)' }} />
+        <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full blur-3xl pointer-events-none" style={{ backgroundColor: 'rgba(245,166,35,0.12)' }} />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 flex-wrap mb-2">
@@ -54,7 +52,7 @@ export default function Dashboard() {
             </h1>
             <span
               className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-full border"
-              style={{ color: '#F5A623', backgroundColor: 'rgba(245,166,35,0.12)', borderColor: 'rgba(245,166,35,0.3)' }}
+              style={{ color: '#B87A0A', backgroundColor: 'rgba(245,166,35,0.15)', borderColor: 'rgba(245,166,35,0.35)' }}
             >
               {roleInfo?.title ?? role}
             </span>
@@ -65,7 +63,11 @@ export default function Dashboard() {
         {/* Live Status pill */}
         <div
           className="relative z-10 rounded-2xl p-4 min-w-[180px] flex items-center justify-between gap-4 shrink-0"
-          style={{ backgroundColor: '#121F38', border: '1px solid #22335A', boxShadow: '0 2px 20px rgba(0,0,0,0.3)' }}
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E8E2D8',
+            boxShadow: '0 1px 3px rgba(28,35,51,0.08)',
+          }}
         >
           <div>
             <p className="text-[10px] uppercase font-bold tracking-widest text-text-secondary mb-1">Active Trips</p>
@@ -73,13 +75,13 @@ export default function Dashboard() {
               {loading ? '—' : stats?.activeTrips ?? '—'}
             </p>
           </div>
-          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.2)' }}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)' }}>
             <Activity className="w-5 h-5" style={{ color: '#F5A623' }} />
           </div>
         </div>
       </div>
 
-      {/* ── 7 KPI Cards ── */}
+      {/* 7 KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4">
         {loading
           ? Array.from({ length: 7 }).map((_, i) => <StatsCardSkeleton key={i} />)
@@ -94,7 +96,7 @@ export default function Dashboard() {
             ))}
       </div>
 
-      {/* ── Bottom Row: Schedule + Quick Actions ── */}
+      {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <OverdueList overdue={overdue} upcoming={upcoming} />
@@ -103,7 +105,6 @@ export default function Dashboard() {
           <QuickActions />
         </div>
       </div>
-
     </div>
   );
 }

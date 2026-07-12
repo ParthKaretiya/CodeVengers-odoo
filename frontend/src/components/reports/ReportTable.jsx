@@ -9,7 +9,7 @@ function TableSkeleton({ cols }) {
           <tr className="border-b border-app-border">
             {cols.map((_, i) => (
               <th key={i} className="px-5 py-3.5">
-                <div className="h-3 w-20 bg-surface-raised rounded animate-pulse" />
+                <div className="h-3 w-20 bg-base-mid rounded animate-pulse" />
               </th>
             ))}
           </tr>
@@ -19,7 +19,7 @@ function TableSkeleton({ cols }) {
             <tr key={r} className="border-b border-app-border/40">
               {cols.map((_, c) => (
                 <td key={c} className="px-5 py-4">
-                  <div className="h-4 bg-surface-raised rounded animate-pulse" style={{ width: c === 0 ? '80px' : '60px' }} />
+                  <div className="h-4 bg-base-mid rounded animate-pulse" style={{ width: c === 0 ? '80px' : '60px' }} />
                 </td>
               ))}
             </tr>
@@ -65,7 +65,7 @@ export default function ReportTable({ columns, data, loading }) {
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr style={{ borderBottom: '1px solid #22335A', backgroundColor: 'rgba(6,13,26,0.5)' }}>
+          <tr style={{ borderBottom: '1px solid #E8E2D8', backgroundColor: '#FAFAF9' }}>
             {columns.map(col => (
               <th
                 key={col.key}
@@ -85,13 +85,13 @@ export default function ReportTable({ columns, data, loading }) {
             ))}
           </tr>
         </thead>
-        <tbody style={{ borderBottom: '1px solid rgba(34,51,90,0.4)' }}>
+        <tbody style={{ borderBottom: '1px solid rgba(232,226,216,0.8)' }}>
           {sorted.map((row, i) => (
             <tr
               key={i}
               className="group transition-colors"
-              style={{ borderBottom: '1px solid rgba(34,51,90,0.4)' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#16274A40'}
+              style={{ borderBottom: '1px solid rgba(232,226,216,0.8)' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#FAF7F2'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               {columns.map(col => (

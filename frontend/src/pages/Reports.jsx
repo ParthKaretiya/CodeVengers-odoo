@@ -41,7 +41,7 @@ const COLUMNS = {
       label: 'Utilization %',
       render: (val) => (
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(34,51,90,0.8)', minWidth: '80px' }}>
+          <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#E8E2D8', minWidth: '80px' }}>
             <div
               className="h-full rounded-full transition-all"
               style={{
@@ -119,7 +119,7 @@ function UtilizationBar({ data }) {
             tickFormatter={v => `${v}%`}
           />
           <Tooltip
-            contentStyle={{ backgroundColor: '#121F38', border: '1px solid #22335A', borderRadius: '12px', color: '#F5F6F8' }}
+            contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E8E2D8', borderRadius: '12px', color: '#1C2333', boxShadow: '0 4px 16px rgba(28,35,51,0.12)' }}
             formatter={(v) => [`${v}%`, 'Utilization']}
             cursor={{ fill: 'rgba(245,166,35,0.05)' }}
           />
@@ -159,7 +159,7 @@ export default function ReportsPage() {
           id="export-csv-btn"
           onClick={exportCsv}
           disabled={loading || !data.length}
-          style={{ backgroundColor: '#121F38', border: '1px solid #22335A', color: '#8B9BB8' }}
+          style={{ backgroundColor: '#FFFFFF', border: '1px solid #E8E2D8', color: '#6B7280', boxShadow: '0 1px 3px rgba(28,35,51,0.07)' }}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold hover:text-text-primary hover:border-accent-signal/50 transition-all focus:outline-none disabled:opacity-40 disabled:pointer-events-none"
         >
           <Download className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function ReportsPage() {
 
       {/* Table */}
       <div className="panel overflow-hidden">
-        <div className="px-6 py-4 border-b border-app-border flex items-center gap-2" style={{ borderColor: '#22335A' }}>
+        <div className="px-6 py-4 border-b border-app-border flex items-center gap-2">
           <BarChart2 className="w-4 h-4 text-text-secondary" />
           <h3 className="text-sm font-bold text-text-primary capitalize">
             {activeTab.replace(/_/g, ' ')} Report
