@@ -16,22 +16,19 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
-// In dev: FRONTEND_URL=http://localhost:5173
-// In prod: set FRONTEND_URL to your deployed frontend URL
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173').split(',');
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. mobile apps, Postman, curl)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS: Origin ${origin} not allowed`));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(...process.env.FRONTEND_URL.split(',').map(url => url.trim()));
+}
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 app.use(morgan('dev'));
 app.use(express.json());
